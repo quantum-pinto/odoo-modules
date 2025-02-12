@@ -1,3 +1,3 @@
-# Addons for cylinder re-circulation
+# odoo modules
 
-Addons to extend Odoo's inventory receipt, management & delivery pipelines for cylinder re-circulation.
+custom odoo modules and addons

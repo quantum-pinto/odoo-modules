@@ -46,7 +46,7 @@ repos:
       # update the NOT INSTALLABLE ADDONS section above
       - id: oca-update-pre-commit-excluded-addons
       - id: oca-fix-manifest-website
-        args: ["https://github.com/TheQuantumGroup/odoo-cylinder"]
+        args: ["https://github.com/quantum-pinto/odoo-modules"]
       - id: oca-gen-addon-readme
         args:
           - --addons-dir=.

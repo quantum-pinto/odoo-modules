@@ -1,0 +1,58 @@
+.univers-lt-std {
+    font-family: "Univers LT Std 57 Condensed", sans-serif;
+    font-weight: normal;
+    font-size: 0.75em;
+    //     color: red !important;
+}
+
+.avoid-page-break-inside {
+    page-break-inside: avoid;
+}
+
+.justify-text {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.approvals {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.3em;
+    width: 100%;
+}
+
+.approval {
+    text-align: left;
+    flex: 1;
+    margin-right: 3.125em;
+}
+
+.signature-status-bar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 130%;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    transform-origin: center;
+    border-radius: 8px;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+.status-approved {
+    background-color: green;
+}
+
+.status-refused {
+    background-color: #ff0000;
+}
+
+.status-expired {
+    background-color: #808080;
+}
