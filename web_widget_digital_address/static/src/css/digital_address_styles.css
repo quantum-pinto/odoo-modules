@@ -1,0 +1,20 @@
+.o_input_group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.o_input_container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.o_input {
+    flex: 1;
+    width: 100%;
+}
+
+.fa-question-circle {
+    margin-left: 8px;
+}
