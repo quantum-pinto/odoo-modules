@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+apartment_user_access,apartment_user_access,model_apartmentplug_apartment,base.group_user,1,1,1,1
+apartment_property_type_user_access,apartment_property_type_user_access,model_apartmentplug_property_type,base.group_user,1,1,1,1
+apartment_apartment_tag_user_access,apartment_apartment_tag_user_access,model_apartmentplug_apartment_tag,base.group_user,1,1,1,1
+apartment_offer_user_access,apartment_offer_user_access,model_apartmentplug_offer,base.group_user,1,1,1,1
+apartment_line_user_access,apartment_line_user_access,model_apartment_line,base.group_user,1,1,1,1

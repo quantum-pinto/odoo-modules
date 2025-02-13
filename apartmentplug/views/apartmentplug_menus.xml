@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <menuitem id="apartmentplug_root_menu" name="ApartmentPlug">
+        <menuitem id="apartments_menu" name="Apartments" sequence="1" />
+        <menuitem id="config_menu" name="Configuration" sequence="99" />
+    </menuitem>
+</odoo>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+     <record id="apartmentplug_property_type_tree" model="ir.ui.view">
+        <field name="name">apartmentplug.property.type.tree</field>
+        <field name="model">apartmentplug.property.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="description" />
+                <field name="offer_count" invisible="1" />
+                <field name="offer_ids" invisible="1" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="apartmentplug_property_type_form" model="ir.ui.view">
+        <field name="name">apartmentplug.property.type.form</field>
+        <field name="model">apartmentplug.property.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="active" invisible="1" />
+                    <div class="oe_right" invisible="not id">
+                       <button
+                        name="%(apartmentplug_offer_action)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-users"
+                    >
+                                <field
+                            name="offer_count"
+                            widget="statinfo"
+                            string=" Offers"
+                        />
+                        </button>
+                    </div>
+                <sheet>
+                    <div class="oe_title">
+                        <h3>
+                            <group>
+                                <field name="name" class="mb-3" required="1" />
+                            </group>
+                        </h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="description" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Apartments">
+                            <field name="apartment_ids" widget="one2many_list">
+                                <tree>
+                                    <field name="name" />
+                                    <field name="user_id" />
+                                    <field name="bedrooms" />
+                                    <field name="expected_price" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="apartmentplug_property_type_action" model="ir.actions.act_window">
+        <field name="name">Apartment</field>
+        <field name="res_model">apartmentplug.property.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        action="apartmentplug_property_type_action"
+        id="apartmentplug_property_type_menu"
+        name="Property Type"
+        parent="config_menu"
+        sequence="1"
+    />
+</odoo>
