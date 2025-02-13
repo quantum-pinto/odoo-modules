@@ -113,7 +113,7 @@
                 <field name="name" />
                 <field name="partner_id" widget="many2one_avatar_user" />
                 <field name="date" />
-                <field name="status" widget="statusbar" />
+                <field name="status" widget="statusbar" statusbar_visible="False" />
             </tree>
         </field>
     </record>

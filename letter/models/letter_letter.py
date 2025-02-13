@@ -123,12 +123,15 @@ class Letter(models.Model):
     body = fields.Html(render_options={"post_process": False})
 
     company_id = fields.Many2one(
-        string="Company",
+        comodel_name="res.company",
+        copy=False,
+        required=True,
         store=True,
-        readonly=True,
         index=True,
         default=lambda self: self.env.company,
+        string="Company",
     )
+
     attachment_number = fields.Integer(
         "Number of Attachments", compute="_compute_attachment_number"
     )
