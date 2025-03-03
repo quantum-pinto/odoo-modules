@@ -1,5 +1,0 @@
-======
-Letter
-======
-
-Letter Management System
