@@ -1,0 +1,103 @@
+<odoo>
+
+    <!-- Add new filters -->
+    <record model="ir.ui.view" id="view_account_invoice_filter_extended">
+        <field name="name">account.invoice.select</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter" />
+        <field name="arch" type="xml">
+            <filter name="salesperson" position="before">
+                <filter
+                    string="Partner"
+                    name="partner"
+                    context="{'group_by':'partner_id'}"
+                />
+            </filter>
+        </field>
+    </record>
+
+
+    <!--        Show partner field on journal lines for invoice-->
+    <record model="ir.ui.view" id="view_move_form_extension">
+        <field name="name">account.move.form.extension</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//form/sheet/notebook/page[2]/field[@name='line_ids']/tree/field[@name='partner_id']"
+                position="replace"
+            >
+                <field
+                    name="partner_id"
+                    domain="['|', ('parent_id', '=', False), ('is_company', '=', True)]"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Override Invoice tree view to fix issue with invoice amount shown in only base currency when
+            invoices are grouped by the currency field
+
+            Fix: using the signed options of the amount fields
+    -->
+    <record model="ir.ui.view" id="view_invoice_tree">
+        <field name="name">account.invoice.tree</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree" />
+        <field name="arch" type="xml">
+            <field name="amount_untaxed_signed" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="amount_tax_signed" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="amount_total_signed" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="amount_residual_signed" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <xpath expr="field[@name='company_id']" position="after">
+                <field name="amount_untaxed" string="Tax Excluded" sum="Total" />
+                <field name="amount_tax" string="Tax" sum="Total" />
+                <field
+                    name="amount_total"
+                    string="Total"
+                    sum="Total"
+                    decoration-bf="1"
+                />
+                <field name="amount_residual" string="Amount Due" sum="Amount Due" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Show due date in date form 'YYYY-MM-dd' and not in human readable form ie 'X days ago'
+        Achieved by removing the widget="remaining_days"
+        -->
+    <record id="view_invoice_tree_extension" model="ir.ui.view">
+        <field name="name">account.invoice.tree.override</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree" />
+        <field name="arch" type="xml">
+
+            <field name="invoice_date_due" position="replace">
+                <field
+                    name="invoice_date_due"
+                    optional="show"
+                    attrs="{'invisible': [['payment_state', 'in', ('paid', 'in_payment', 'reversed')]]}"
+                />
+            </field>
+
+        </field>
+    </record>
+
+    <record id="action_compute_lag_days" model="ir.actions.server">
+        <field name="name">Compute Lag Days</field>
+        <field name="model_id" ref="account.model_account_move" />
+        <field name="groups_id" eval="[(4, ref('base.group_user'))]" />
+        <field name="binding_model_id" ref="account.model_account_move" />
+        <field name="state">code</field>
+        <field name="code">action = records.action_compute_lag_days()</field>
+    </record>
+
+</odoo>

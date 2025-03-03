@@ -9,7 +9,7 @@ manifest-required-authors=Pinto
 manifest-required-keys=license
 manifest-deprecated-keys=description,active
 license-allowed=Other proprietary
-valid-odoo-versions=17.0
+valid-odoo-versions=14.0
 
 [MESSAGES CONTROL]
 disable=all
