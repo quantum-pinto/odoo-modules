@@ -9,13 +9,16 @@
             <kanban
                 class="o_kanban_dashboard o_letter_kanban o_emphasize_colors"
                 sample="1"
+                default_order="create_date desc"
             >
                 <field name="name" />
                 <field name="color" />
                 <field name="partner_id" />
+                <field name="date" />
                 <field name="is_delivered" />
                 <field name="description" />
                 <field name="status" />
+                <field name="is_sender" />
                 <templates>
                     <t t-name="kanban-menu" groups="letter.letter_user_group">
                         <div class="container">
@@ -73,7 +76,7 @@
                             <div class="o_kanban_record_bottom mt-3">
                                 <div
                                     class="oe_kanban_bottom_left"
-                                    invisible="is_delivered"
+                                    invisible="is_delivered or not is_sender"
                                 >
                                     <a type="delete" class="btn btn-secondary btn-sm">
                                         <i class="fa fa-trash" />
@@ -124,40 +127,61 @@
         <field name="name">letter.inbound.form</field>
         <field name="model">letter.inbound</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="0">
                <field name="id" invisible="1" />
                <field name="company_id" invisible="1" />
                <field name="is_delivered" invisible="1" />
+               <field name="is_sender" invisible="1" />
                <header>
                     <button
                         name="action_send_inbound_letter"
                         type="object"
                         string="Send"
                         class="btn-primary"
-                        invisible="not id"
+                        invisible="not id or not is_sender or is_delivered"
+                    />
+                    <button
+                        name="action_reply_inbound_letter"
+                        type="object"
+                        string="Reply"
+                        class="btn-primary"
+                        invisible="not id or is_sender"
                     />
                 </header>
                 <sheet>
                     <group>
-                        <field name="name" readonly="is_delivered" />
+                        <field name="name" readonly="is_delivered or not is_sender" />
                         <field
                             name="user_id"
-                            options="{'no_create': True}"
+                            options="{'no_create': True, 'no_open': True}"
                             widget="many2one_avatar_user"
                             readonly="1"
+                            invisible="not is_sender"
                         />
                         <field
                             name="partner_id"
-                            options="{'no_create': True}"
+                            options="{'no_create': True, 'no_open': True}"
                             widget="many2one_avatar_user"
                             readonly="is_delivered"
+                            invisible="not is_sender"
                         />
-                        <field name="date" readonly="is_delivered" />
-                        <field name="description" readonly="is_delivered" />
+                        <field
+                            name="partner_id"
+                            string="From"
+                            options="{'no_create': True, 'no_open': True}"
+                            widget="many2one_avatar_user"
+                            readonly="1"
+                            invisible="is_sender"
+                        />
+                        <field name="date" readonly="is_delivered or not is_sender" />
+                        <field
+                            name="description"
+                            readonly="is_delivered or not is_sender"
+                        />
                         <field
                             name="attachment"
                             widget="binary"
-                            readonly="is_delivered"
+                            readonly="is_delivered or not is_sender"
                         />
                     </group>
                 </sheet>

@@ -138,6 +138,7 @@ class Letter(models.Model):
     is_closed = fields.Boolean(compute="_compute_is_closed")
     is_delivered = fields.Boolean(default=False)
     is_reviewed = fields.Boolean(compute="_compute_is_review_allowed")
+    inbound_letter_url = fields.Html(sanitize=False, readonly=True)
 
     @api.depends("stage_id")
     def _compute_is_review_allowed(self):
@@ -201,12 +202,30 @@ class Letter(models.Model):
         else:
             self.template_id = False
 
+    def _compute_inbound_letter_url(self):
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        if self.env.context.get("inbound_letter_id"):
+            letter_reference = self.env.context["inbound_letter_name"]
+            record_id = self.env.context["inbound_letter_id"]
+            url = f"{base_url}/web#id={record_id}&model=letter.inbound&view_type=form"
+            return f"""
+                    <a href="{url}"  target="_self"  class="oe_link">
+                        {letter_reference} Inbound Letter
+                    </a>
+                """
+        else:
+            return False
+
     @api.model_create_multi
-    def create(self, values_list):
-        for value in values_list:
+    def create(self, vals_list):
+        for value in vals_list:
             date = value.get("date", None)
             value["name"] = self._create_unique_reference(date)
-        return super().create(values_list)
+            if self.env.context.get("inbound_letter_id"):
+                url = self._compute_inbound_letter_url()
+                value["inbound_letter_url"] = url
+
+        return super().create(vals_list)
 
     @api.onchange("partner_ids")
     def _onchange_partner_ids(self):

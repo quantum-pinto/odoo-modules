@@ -17,9 +17,10 @@ class LetterInbound(models.Model):
     description = fields.Text()
     attachment = fields.Binary(string="Letter")
     user_id = fields.Many2one(
-        comodel_name="res.users",
+        comodel_name="res.partner",
         string="Sender",
-        default=lambda self: self.env.user,
+        # Default to the current user's partner
+        default=lambda self: self.env.user.partner_id,
     )
     company_id = fields.Many2one(
         comodel_name="res.company",
@@ -38,6 +39,7 @@ class LetterInbound(models.Model):
             ("sent", "Sent"),
             ("pending", "Pending"),
             ("failed", "Failed"),
+            ("received", "Received"),
         ],
     )
     active = fields.Boolean(default=True)
@@ -48,6 +50,7 @@ class LetterInbound(models.Model):
         readonly=True,
         compute="_compute_attachment_id",
     )
+    is_sender = fields.Boolean(default=True)
 
     @api.depends("attachment")
     def _compute_attachment_id(self):
@@ -75,21 +78,51 @@ class LetterInbound(models.Model):
         records = [record for record in records if record["company_id"] in company_ids]
         return records
 
-    def send_inbound_letter(self):
+    def mail_recipient(self):
         try:
             mail_values = {
-                "subject": f"Inbound Letter: {self.name}",
-                "body_html": f"Hi {self.partner_id.name}, Kindly find attached letter.",
+                "subject": f"New Inbound Letter: {self.name}",
+                "body_html": f"""
+                    <p>Dear {self.partner_id.name},</p>
+                    <p>You have a new inbound letter.</p>
+                    <p>Reference: {self.name}</p>
+                    <p>Description: {self.description}</p>
+                """,
                 "email_to": self.partner_id.email,
-                "attachment_ids": [(6, 0, [self.attachment_id.id])],
             }
             mail = self.env["mail.mail"].create(mail_values)
             mail.send()
+            # print("Email sent successfully")
+            return True
+        except Exception:
+            return False
+
+    def send_inbound_letter(self):
+        try:
+            self.env["letter.inbound"].create(
+                {
+                    "name": self.name,
+                    "date": fields.Date.today(),
+                    "description": self.description,
+                    "attachment": self.attachment,
+                    "user_id": self.partner_id.id,
+                    "company_id": self.company_id.id,
+                    "partner_id": self.user_id.id,
+                    "status": "received",
+                    "is_sender": False,
+                    "is_delivered": True,
+                }
+            )
             self.is_delivered = True
             self.status = "sent"
+
+            self.mail_recipient()
+
+            return True
         except Exception:
             self.is_delivered = False
             self.status = "failed"
+
         return True
 
     def send_inbound_letter_cron(self):
@@ -103,3 +136,19 @@ class LetterInbound(models.Model):
         self.ensure_one()
         self.send_inbound_letter()
         return True
+
+    def action_reply_inbound_letter(self):
+        self.ensure_one()
+        action = {
+            "type": "ir.actions.act_window",
+            "name": "Letter Dashboard",
+            "res_model": "letter.type",  # Target model
+            "view_mode": "kanban,form",  # Allowed views
+            "target": "current",  # 'new' for popup
+            "domain": [],  # Optional: Filter records
+            "context": {
+                "inbound_letter_id": self.id,
+                "inbound_letter_name": self.name,
+            },
+        }
+        return action
