@@ -119,6 +119,7 @@
                 <field name="active" invisible="1" />
                 <field name="is_closed" invisible="1" />
                 <field name="is_reviewed" invisible="1" />
+                <field name="inbound_letter_url" invisible="1" />
 
                 <header>
                     <widget
@@ -177,6 +178,11 @@
                         <h4>
                             <field invisible="name == '/'" name="name" readonly="id" />
                         </h4>
+                        <field
+                            name="inbound_letter_url"
+                            widget="url"
+                            invisible="not inbound_letter_url"
+                        />
                         <h1>
                             <field
                                 name="subject"
