@@ -39,6 +39,7 @@ class LetterInbound(models.Model):
             ("sent", "Sent"),
             ("pending", "Pending"),
             ("failed", "Failed"),
+            ("received", "Received"),
         ],
     )
     active = fields.Boolean(default=True)
@@ -107,7 +108,7 @@ class LetterInbound(models.Model):
                     "user_id": self.partner_id.id,
                     "company_id": self.company_id.id,
                     "partner_id": self.user_id.id,
-                    "status": "sent",
+                    "status": "received",
                     "is_sender": False,
                     "is_delivered": True,
                 }
@@ -138,14 +139,15 @@ class LetterInbound(models.Model):
 
     def action_reply_inbound_letter(self):
         self.ensure_one()
-        # return {
-        #     "type": "ir.actions.act_window",
-        #     "name": "Reply to Inbound Letter",
-        #     "res_model": "letter.inbound",
-        #     "view_mode": "form",
-        #     "view_type": "form",
-        #     "res_id": self.id,
-        #     "target": "current",
-        # }
-
-        return True
+        action = {
+            "type": "ir.actions.act_window",
+            "name": "Letter Dashboard",
+            "res_model": "letter.type",  # Target model
+            "view_mode": "kanban,form",  # Allowed views
+            "target": "current",  # 'new' for popup
+            "domain": [],  # Optional: Filter records
+            "context": {
+                "inbound_letter_id": self.id,
+            },
+        }
+        return action
