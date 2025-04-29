@@ -178,11 +178,23 @@
                         <h4>
                             <field invisible="name == '/'" name="name" readonly="id" />
                         </h4>
-                        <field
-                            name="inbound_letter_url"
-                            widget="url"
+
+                        <div
+                            class="d-flex align-items-baseline"
                             invisible="not inbound_letter_url"
-                        />
+                            style="margin-bottom: 40px;"
+                        >
+                            <h6
+                                style="margin: 0; margin-right: 8px; color: #7C7BAD;"
+                            >Reply To:  </h6>
+                            <field
+                                name="inbound_letter_url"
+                                widget="html"
+                                class="oe_inline"
+                                style="vertical-align: baseline !important;"
+                            />
+                        </div>
+
                         <h1>
                             <field
                                 name="subject"
