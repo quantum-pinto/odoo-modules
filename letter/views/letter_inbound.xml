@@ -127,7 +127,7 @@
         <field name="name">letter.inbound.form</field>
         <field name="model">letter.inbound</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="0">
                <field name="id" invisible="1" />
                <field name="company_id" invisible="1" />
                <field name="is_delivered" invisible="1" />

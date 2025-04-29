@@ -148,6 +148,7 @@ class LetterInbound(models.Model):
             "domain": [],  # Optional: Filter records
             "context": {
                 "inbound_letter_id": self.id,
+                "inbound_letter_name": self.name,
             },
         }
         return action
