@@ -114,7 +114,11 @@
                 <field name="company_id" optional="show" />
                 <field name="user_id" optional="hide" widget="many2one_avatar_user" />
                 <field name="name" />
-                <field name="partner_id" widget="many2one_avatar_user" />
+                <field
+                    name="partner_id"
+                    string="Partner"
+                    widget="many2one_avatar_user"
+                />
                 <field name="date" />
                 <field name="status" widget="statusbar" statusbar_visible="False" />
             </tree>
