@@ -49,6 +49,11 @@ class LetterType(models.Model):
         column2="partner_id",
         string="Signatories",
     )
+    partner_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Recipient",
+        default=lambda self: self.env.context.get("default_recipient"),
+    )
 
     mail_template_ids = fields.Many2many(
         comodel_name="mail.template",

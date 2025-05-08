@@ -182,7 +182,7 @@
                         <div
                             class="d-flex align-items-baseline"
                             invisible="not inbound_letter_url"
-                            style="margin-bottom: 40px;"
+                            style="inbound_letter_urlmargin-bottom: 40px;"
                         >
                             <h6
                                 style="margin: 0; margin-right: 8px; color: #7C7BAD;"
@@ -193,6 +193,7 @@
                                 class="oe_inline"
                                 style="vertical-align: baseline !important;"
                             />
+
                         </div>
 
                         <h1>
@@ -218,7 +219,7 @@
                             <field
                                 name="partner_ids"
                                 options="{'no_create': False}"
-                                widget="many2many_tags_avatar"
+                                widget="many2many_tags"
                                 readonly="is_reviewed or is_closed"
                             />
                             <field name="available_mail_template_ids" invisible="1" />
