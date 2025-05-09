@@ -193,6 +193,7 @@
                                 class="oe_inline"
                                 style="vertical-align: baseline !important;"
                             />
+
                         </div>
 
                         <h1>
@@ -218,7 +219,7 @@
                             <field
                                 name="partner_ids"
                                 options="{'no_create': False}"
-                                widget="many2many_tags_avatar"
+                                widget="many2many_tags"
                                 readonly="is_reviewed or is_closed"
                             />
                             <field name="available_mail_template_ids" invisible="1" />
