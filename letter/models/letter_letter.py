@@ -47,6 +47,7 @@ class Letter(models.Model):
         store=False,
     )
 
+
     def read(self, fields=None, load="_classic_read"):
         if fields and "company_id" not in fields:
             fields.append("company_id")
@@ -98,7 +99,19 @@ class Letter(models.Model):
         column1="letter_id",
         column2="partner_id",
         string="Recipients",
+        default=lambda self: self._default_partner_ids()
     )
+
+    def _default_partner_ids(self):
+        if self.env.context.get('inbound_letter_id'):
+            inbound_letter = self.env['letter.inbound'].browse(
+                self.env.context['inbound_letter_id']
+            )
+            return [(6, 0, [inbound_letter.partner_id.id])]
+        return False
+
+
+
     color = fields.Integer(default=lambda self: self._get_default_color())
     letter_type_id = fields.Many2one(
         comodel_name="letter.type",
@@ -106,6 +119,7 @@ class Letter(models.Model):
         required=True,
         ondelete="restrict",
     )
+
     letter_type_image = fields.Binary(related="letter_type_id.image")
 
     active = fields.Boolean(default=True)
@@ -138,7 +152,7 @@ class Letter(models.Model):
     is_closed = fields.Boolean(compute="_compute_is_closed")
     is_delivered = fields.Boolean(default=False)
     is_reviewed = fields.Boolean(compute="_compute_is_review_allowed")
-    inbound_letter_url = fields.Html(sanitize=False, readonly=True)
+    inbound_letter_url = fields.Html(sanitize=False, readonly=True,default=lambda self: self._compute_inbound_letter_url())
 
     @api.depends("stage_id")
     def _compute_is_review_allowed(self):
@@ -209,7 +223,7 @@ class Letter(models.Model):
             record_id = self.env.context["inbound_letter_id"]
             url = f"{base_url}/web#id={record_id}&model=letter.inbound&view_type=form"
             return f"""
-                    <a href="{url}"  target="_self"  class="oe_link">
+                    <a href="{url}"  target="current"  class="oe_link">
                         {letter_reference} Inbound Letter
                     </a>
                 """
@@ -221,9 +235,6 @@ class Letter(models.Model):
         for value in vals_list:
             date = value.get("date", None)
             value["name"] = self._create_unique_reference(date)
-            if self.env.context.get("inbound_letter_id"):
-                url = self._compute_inbound_letter_url()
-                value["inbound_letter_url"] = url
 
         return super().create(vals_list)
 
