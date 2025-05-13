@@ -99,7 +99,7 @@ class LetterInbound(models.Model):
 
     def send_inbound_letter(self):
         try:
-            self.env["letter.inbound"].create(
+            self.env["letter.inbound"].sudo().create(
                 {
                     "name": self.name,
                     "date": fields.Date.today(),
@@ -128,7 +128,7 @@ class LetterInbound(models.Model):
     def send_inbound_letter_cron(self):
         inbound_letters = self.search([])
         for record in inbound_letters:
-            if not record.is_delivered and record.date <= fields.Date.today():  # type: ignore
+            if not record.is_delivered and record.date <= fields.Date.today():
                 record.send_inbound_letter()
         return True
 
@@ -142,13 +142,14 @@ class LetterInbound(models.Model):
         action = {
             "type": "ir.actions.act_window",
             "name": "Letter Dashboard",
-            "res_model": "letter.type",  # Target model
-            "view_mode": "kanban,form",  # Allowed views
-            "target": "current",  # 'new' for popup
-            "domain": [],  # Optional: Filter records
+            "res_model": "letter.type",
+            "view_mode": "kanban,form",
+            "target": "current",
+            "domain": [],
             "context": {
                 "inbound_letter_id": self.id,
-                "inbound_letter_name": self.name, #Inbound letter name
+                "inbound_letter_name": self.name,
+                "inbound_partner_id": self.partner_id.id,
             },
         }
         return action

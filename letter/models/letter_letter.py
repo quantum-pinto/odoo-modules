@@ -47,7 +47,6 @@ class Letter(models.Model):
         store=False,
     )
 
-
     def read(self, fields=None, load="_classic_read"):
         if fields and "company_id" not in fields:
             fields.append("company_id")
@@ -99,18 +98,13 @@ class Letter(models.Model):
         column1="letter_id",
         column2="partner_id",
         string="Recipients",
-        default=lambda self: self._default_partner_ids()
+        default=lambda self: self._default_partner_ids(),
     )
 
     def _default_partner_ids(self):
-        if self.env.context.get('inbound_letter_id'):
-            inbound_letter = self.env['letter.inbound'].browse(
-                self.env.context['inbound_letter_id']
-            )
-            return [(6, 0, [inbound_letter.partner_id.id])]
+        if self.env.context.get("inbound_partner_id"):
+            return [(6, 0, [self.env.context["inbound_partner_id"]])]
         return False
-
-
 
     color = fields.Integer(default=lambda self: self._get_default_color())
     letter_type_id = fields.Many2one(
@@ -152,7 +146,11 @@ class Letter(models.Model):
     is_closed = fields.Boolean(compute="_compute_is_closed")
     is_delivered = fields.Boolean(default=False)
     is_reviewed = fields.Boolean(compute="_compute_is_review_allowed")
-    inbound_letter_url = fields.Html(sanitize=False, readonly=True,default=lambda self: self._compute_inbound_letter_url())
+    inbound_letter_url = fields.Html(
+        sanitize=False,
+        readonly=True,
+        default=lambda self: self._compute_inbound_letter_url(),
+    )
 
     @api.depends("stage_id")
     def _compute_is_review_allowed(self):
