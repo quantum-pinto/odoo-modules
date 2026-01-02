@@ -1,1 +1,1 @@
-from . import apartmentplug_apartment
+from . import apartmentplug_offer
