@@ -207,6 +207,7 @@
                     </div>
                     <group>
                         <group name="main">
+                            <field name="letter_type_id" invisible="1" />
                             <field
                                 name="user_id"
                                 options="{'no_create': True, 'no_open': True}"
@@ -214,7 +215,12 @@
                                 widget="many2one_avatar_user"
                                 readonly="1"
                             />
-                            <field name="letter_type_id" invisible="1" />
+                            <field
+                                name="template_id"
+                                options="{'no_create': True, 'no_open': True}"
+                                context="{'default_letter_id': active_id}"
+                                invisible="is_reviewed or is_closed"
+                            />
                             <field name="date" readonly="is_reviewed or is_closed" />
                             <field
                                 name="partner_ids"
@@ -223,12 +229,6 @@
                                 readonly="is_reviewed or is_closed"
                             />
                             <field name="available_mail_template_ids" invisible="1" />
-                            <field
-                                name="template_id"
-                                options="{'no_create': True, 'no_open': True}"
-                                context="{'default_letter_id': active_id}"
-                                invisible="is_reviewed or is_closed"
-                            />
                             <field name="company_id" invisible="1" />
                             <field name="render_model" invisible="1" />
                         </group>
